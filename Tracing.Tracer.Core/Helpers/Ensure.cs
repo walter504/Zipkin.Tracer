@@ -9,6 +9,13 @@ namespace Tracing.Tracer.Core
 {
     internal static class Ensure
     {
+        public static T ArgumentNotNull<T>(T reference, string errorMessageTemplate, params object[] errorMessageArgs) {
+            if (reference == null) {
+              // If either of these parameters is null, the right thing happens anyway
+                throw new ArgumentNullException(string.Format(errorMessageTemplate, errorMessageArgs));
+            }
+            return reference;
+          }
         /// <summary>
         /// Checks an argument to ensure it isn't null.
         /// </summary>
