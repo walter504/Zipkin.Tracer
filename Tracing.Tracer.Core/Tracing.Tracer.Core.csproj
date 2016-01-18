@@ -46,6 +46,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnnotationSubmitter.cs" />
+    <Compile Include="Helpers\Util.cs" />
+    <Compile Include="IServerResponseAdapter.cs" />
     <Compile Include="IServerRequestAdapter.cs" />
     <Compile Include="IClientRequestAdapter.cs" />
     <Compile Include="KeyValueAnnotation.cs" />
@@ -54,6 +56,8 @@
     <Compile Include="ClientResponseInterceptor.cs" />
     <Compile Include="ILocalSpanState.cs" />
     <Compile Include="LoggingSpanCollector.cs" />
+    <Compile Include="ServerRequestInterceptor.cs" />
+    <Compile Include="ServerResponseInterceptor.cs" />
     <Compile Include="ServerTracer.cs" />
     <Compile Include="Helpers\Ensure.cs" />
     <Compile Include="ServerSpanState.cs" />

@@ -20,7 +20,7 @@ namespace Tracing.Tracer.Core
          *
          * @param adapter The adapter deals with implementation specific details.
          */
-        public void handle(IClientRequestAdapter adapter) {
+        public void Handle(IClientRequestAdapter adapter) {
 
             SpanId spanId = clientTracer.StartNewSpan(adapter.SpanName);
             if (spanId == null) {

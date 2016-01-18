@@ -10,7 +10,7 @@ namespace Tracing.Tracer.Core
     public class LoggingSpanCollector : ISpanCollector
     {
         private static string UTF_8 = "UTF-8";
-        public void collect(Span span)
+        public void Collect(Span span)
         {
             Debug.Print(span.ToString());
         }

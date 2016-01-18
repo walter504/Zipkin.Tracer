@@ -16,7 +16,7 @@ namespace Tracing.Tracer.Core
          *
          * @param adapter Adapter that hides implementation details.
          */
-        public void handle(IClientResponseAdapter adapter)
+        public void Handle(IClientResponseAdapter adapter)
         {
             try
             {

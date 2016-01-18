@@ -63,7 +63,7 @@ namespace Tracing.Tracer.Core
             annotation.Value = annotationName;
             span.Annotations.Add(annotation);
             span.Duration = annotation.Timestamp - span.Timestamp;
-            spanCollector.collect(span);
+            spanCollector.Collect(span);
             return true;
         }
 

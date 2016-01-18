@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tracing.Tracer.Core
+namespace Tracing.Tracer.Core.Helpers
 {
-    public interface ISpanCollector
+    public class Util
     {
-        void Collect(Span span);
+
     }
 }
