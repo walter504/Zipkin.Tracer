@@ -11,7 +11,7 @@ namespace Tracing.Tracer.Core
         public ServerSpanAndEndpoint SpanAndEndpoint { get; set; }
         Random randomGenerator { get; set; }
         ISpanCollector spanCollector { get; set; }
-        ITraceSampler traceSampler { get; set; }
+        Sampler traceSampler { get; set; }
 
         public ServerTracer(IServerSpanState state)
             : this(new ServerSpanAndEndpoint(state))
@@ -42,7 +42,7 @@ namespace Tracing.Tracer.Core
         {
             Ensure.ArgumentNotNullOrEmptyString(spanName, "Null or blank span name");
             long newTraceId = Util.GetRandomId();
-            if (!traceSampler.Test(newTraceId))
+            if (!traceSampler.IsSampled(newTraceId))
             {
                 SpanAndEndpoint.State.CurrentServerSpan = ServerSpan.NOT_SAMPLED;
                 return;

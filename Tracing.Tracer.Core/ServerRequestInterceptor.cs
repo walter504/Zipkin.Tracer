@@ -20,8 +20,7 @@ namespace Tracing.Tracer.Core
             serverTracer.ClearCurrentSpan();
             TraceData traceData = adapter.TraceData;
 
-            bool sample = traceData.Sample;
-            if (sample != null && !sample)
+            if (traceData.Sample.HasValue && !traceData.Sample.Value)
             {
                 serverTracer.SetStateNoTracing();
             }

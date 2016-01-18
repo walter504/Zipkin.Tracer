@@ -11,7 +11,7 @@ namespace Tracing.Tracer.Core
         public ClientSpanAndEndpoint SpanAndEndpoint { get; set; }
         Random randomGenerator { get; set; }
         ISpanCollector spanCollector { get; set; }
-        ITraceSampler traceSampler { get; set; }
+        Sampler traceSampler { get; set; }
 
         public ClientTracer(IServerClientAndLocalSpanState state)
             :this(new ClientSpanAndEndpoint(state))
@@ -56,7 +56,7 @@ namespace Tracing.Tracer.Core
             if (!sample.HasValue)
             {
                 // No sample indication is present.
-                if (!traceSampler.Test(newSpanId.TraceId))
+                if (!traceSampler.IsSampled(newSpanId.TraceId))
                 {
                     SpanAndEndpoint.State.CurrentClientSpan = null;
                     SpanAndEndpoint.State.CurrentClientServiceName = null;

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Tracing.Tracer.Core
 {
-    public interface ITraceSampler
+    public interface ICommonSpanState
     {
-        bool Test(long traceId);
+        bool? Sample { get; }
     }
 }

@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,16 +49,16 @@
   <ItemGroup>
     <Compile Include="AnnotationSubmitter.cs" />
     <Compile Include="Helpers\Util.cs" />
-    <Compile Include="IServerResponseAdapter.cs" />
-    <Compile Include="IServerRequestAdapter.cs" />
-    <Compile Include="IClientRequestAdapter.cs" />
+    <Compile Include="Interface\IServerResponseAdapter.cs" />
+    <Compile Include="Interface\IServerRequestAdapter.cs" />
+    <Compile Include="Interface\IClientRequestAdapter.cs" />
     <Compile Include="KeyValueAnnotation.cs" />
     <Compile Include="ClientRequestInterceptor.cs" />
-    <Compile Include="IClientResponseAdapter.cs" />
+    <Compile Include="Interface\IClientResponseAdapter.cs" />
     <Compile Include="ClientResponseInterceptor.cs" />
-    <Compile Include="ILocalSpanState.cs" />
-    <Compile Include="Local\ThreadLocalServerClientAndLocalSpanState.cs" />
-    <Compile Include="Local\LocalTracer.cs" />
+    <Compile Include="Interface\ILocalSpanState.cs" />
+    <Compile Include="ThreadLocalServerClientAndLocalSpanState.cs" />
+    <Compile Include="LocalTracer.cs" />
     <Compile Include="LoggingSpanCollector.cs" />
     <Compile Include="ServerRequestInterceptor.cs" />
     <Compile Include="ServerResponseInterceptor.cs" />
@@ -64,13 +66,13 @@
     <Compile Include="Helpers\Ensure.cs" />
     <Compile Include="ServerSpanState.cs" />
     <Compile Include="ServerSpan.cs" />
-    <Compile Include="ICommonSpanState.cs" />
-    <Compile Include="ISpanCollector.cs" />
-    <Compile Include="ITraceSampler.cs" />
+    <Compile Include="Interface\ICommonSpanState.cs" />
+    <Compile Include="Interface\ISpanCollector.cs" />
+    <Compile Include="Sampler.cs" />
     <Compile Include="ClientTracer.cs" />
-    <Compile Include="IServerClientAndLocalSpanState.cs" />
-    <Compile Include="IClientSpanState.cs" />
-    <Compile Include="ISpanAndEndpoint.cs" />
+    <Compile Include="Interface\IServerClientAndLocalSpanState.cs" />
+    <Compile Include="Interface\IClientSpanState.cs" />
+    <Compile Include="Interface\ISpanAndEndpoint.cs" />
     <Compile Include="TraceData.cs" />
     <Compile Include="SpanId.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -99,6 +101,13 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>这台计算机上缺少此项目引用的 NuGet 程序包。启用“NuGet 程序包还原”可下载这些程序包。有关详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

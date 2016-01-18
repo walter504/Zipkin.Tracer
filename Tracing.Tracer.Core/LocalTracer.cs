@@ -9,9 +9,8 @@ namespace Tracing.Tracer.Core
     public class LocalTracer : AnnotationSubmitter
     {
         public LocalSpanAndEndpoint SpanAndEndpoint { get; set; }
-        Random randomGenerator { get; set; }
         ISpanCollector spanCollector { get; set; }
-        ITraceSampler traceSampler { get; set; }
+        Sampler traceSampler { get; set; }
 
         public LocalTracer()
         {
@@ -72,7 +71,7 @@ namespace Tracing.Tracer.Core
             if (sample == null)
             {
                 // No sample indication is present.
-                if (!traceSampler.Test(newSpanId.TraceId))
+                if (!traceSampler.IsSampled(newSpanId.TraceId))
                 {
                     SpanAndEndpoint.State.CurrentLocalSpan = null;
                     return null;
@@ -109,11 +108,11 @@ namespace Tracing.Tracer.Core
             Span span = SpanAndEndpoint.Span;
             if (span == null) return;
 
-            long startTick = span.startTick;
+            var startTick = span.startTick;
             long duration;
-            if (startTick != null)
+            if (startTick.HasValue)
             {
-                duration = (endTick - startTick) / 1000;
+                duration = (endTick - startTick.Value) / 1000;
             }
             else
             {

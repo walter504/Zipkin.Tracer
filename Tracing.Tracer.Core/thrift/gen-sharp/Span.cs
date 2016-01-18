@@ -30,7 +30,7 @@ public partial class Span : TBase
   private bool _debug;
   private long _timestamp;
   private long _duration;
-  public long startTick;
+  public long? startTick;
   public long Timestamp
   {
       get
