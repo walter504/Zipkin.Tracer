@@ -41,7 +41,7 @@ namespace Tracing.Tracer.Core
         public void SetStateUnknown(string spanName)
         {
             Ensure.ArgumentNotNullOrEmptyString(spanName, "Null or blank span name");
-            long newTraceId = GetRandomId();
+            long newTraceId = Util.GetRandomId();
             if (!traceSampler.Test(newTraceId))
             {
                 SpanAndEndpoint.State.CurrentServerSpan = ServerSpan.NOT_SAMPLED;
@@ -55,7 +55,7 @@ namespace Tracing.Tracer.Core
             SubmitStartAnnotation(zipkinCoreConstants.SERVER_RECV);
         }
 
-        public void setServerReceived(int ipv4, int port, string clientService) {
+        public void SetServerReceived(int ipv4, int port, string clientService) {
             SubmitAddress(zipkinCoreConstants.CLIENT_ADDR, ipv4, port, clientService);
             SubmitStartAnnotation(zipkinCoreConstants.SERVER_RECV);
         }
@@ -65,13 +65,6 @@ namespace Tracing.Tracer.Core
             {
                 SpanAndEndpoint.State.CurrentServerSpan = null;
             }
-        }
-
-        private long GetRandomId()
-        {
-            byte[] buffer = new byte[8];
-            randomGenerator.NextBytes(buffer);
-            return BitConverter.ToInt64(buffer, 0);
         }
     }
 }

@@ -55,6 +55,8 @@
     <Compile Include="IClientResponseAdapter.cs" />
     <Compile Include="ClientResponseInterceptor.cs" />
     <Compile Include="ILocalSpanState.cs" />
+    <Compile Include="Local\ThreadLocalServerClientAndLocalSpanState.cs" />
+    <Compile Include="Local\LocalTracer.cs" />
     <Compile Include="LoggingSpanCollector.cs" />
     <Compile Include="ServerRequestInterceptor.cs" />
     <Compile Include="ServerResponseInterceptor.cs" />

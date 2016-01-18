@@ -92,20 +92,13 @@ namespace Tracing.Tracer.Core
                     parentSpan = serverSpan.Span;
                 }
             }
-            long newSpanId = GetRandomId();
+            long newSpanId = Util.GetRandomId();
             if (parentSpan == null)
             {
                 return new SpanId(newSpanId, newSpanId, null);
             }
 
             return new SpanId(parentSpan.Trace_id, newSpanId, parentSpan.Id);
-        }
-
-        private long GetRandomId()
-        {
-            byte[] buffer = new byte[8];
-            randomGenerator.NextBytes(buffer);
-            return BitConverter.ToInt64(buffer, 0);
         }
     }
 }

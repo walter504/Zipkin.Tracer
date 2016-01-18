@@ -16,7 +16,7 @@ namespace Tracing.Tracer.Core
             if (span != null)
             {
                 Annotation annotation = new Annotation();
-                annotation.Timestamp = GetCurrentTimeStamp();
+                annotation.Timestamp = Util.GetCurrentTimeStamp();
                 annotation.Host = SpanAndEndpoint.Endpoint;
                 annotation.Value = value;
                 AddAnnotation(span, annotation);
@@ -41,12 +41,14 @@ namespace Tracing.Tracer.Core
             Span span = SpanAndEndpoint.Span;
             if (span != null) {
                 Annotation annotation = new Annotation();
-                annotation.Timestamp = GetCurrentTimeStamp();
+                annotation.Timestamp = Util.GetCurrentTimeStamp();
                 annotation.Host = SpanAndEndpoint.Endpoint;
                 annotation.Value = annotationName;
-                //synchronized
-                span.Timestamp = annotation.Timestamp;
-                span.Annotations.Add(annotation);
+                lock (span)
+                {
+                    span.Timestamp = annotation.Timestamp;
+                    span.Annotations.Add(annotation);
+                }
             }
         }
 
@@ -58,7 +60,7 @@ namespace Tracing.Tracer.Core
                 return false;
             }
             Annotation annotation = new Annotation();
-            annotation.Timestamp = GetCurrentTimeStamp();
+            annotation.Timestamp = Util.GetCurrentTimeStamp();
             annotation.Host = SpanAndEndpoint.Endpoint;
             annotation.Value = annotationName;
             span.Annotations.Add(annotation);
@@ -101,20 +103,18 @@ namespace Tracing.Tracer.Core
             SubmitBinaryAnnotation(key, value.ToString());
         }
 
-        private long GetCurrentTimeStamp()
-        {
-            var t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-            return Convert.ToInt64(t.TotalMilliseconds * 1000);
-        }
-
         private void AddAnnotation(Span span, Annotation annotation) {
-            //synchronized
-            span.Annotations.Add(annotation);
+            lock (span)
+            {
+                span.Annotations.Add(annotation);
+            }
         }
 
         private void AddBinaryAnnotation(Span span, BinaryAnnotation ba) {
-            //synchronized
-            span.Binary_annotations.Add(ba);
+            lock (span)
+            {
+                span.Binary_annotations.Add(ba);
+            }
         }
     }
 }
