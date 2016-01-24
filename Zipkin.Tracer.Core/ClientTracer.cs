@@ -9,14 +9,16 @@ namespace Zipkin.Tracer.Core
         ISpanCollector spanCollector { get; set; }
         Sampler traceSampler { get; set; }
 
-        public ClientTracer(IServerClientAndLocalSpanState state)
-            :this(new ClientSpanAndEndpoint(state))
+        public ClientTracer(IServerClientAndLocalSpanState state, ISpanCollector spanCollector, Sampler traceSampler)
+            : this(new ClientSpanAndEndpoint(state), spanCollector, traceSampler)
         {
         }
 
-        public ClientTracer(ClientSpanAndEndpoint spanAndEndpoint)
+        ClientTracer(ClientSpanAndEndpoint spanAndEndpoint, ISpanCollector spanCollector, Sampler traceSampler)
         {
-            SpanAndEndpoint = spanAndEndpoint;
+            base.SpanAndEndpoint = SpanAndEndpoint = spanAndEndpoint;
+            this.spanCollector = spanCollector;
+            this.traceSampler = traceSampler;
         }
 
         public void SetClientSent()
@@ -24,7 +26,8 @@ namespace Zipkin.Tracer.Core
             SubmitStartAnnotation(zipkinCoreConstants.CLIENT_SEND);
         }
 
-        public void SetClientSent(int ipv4, int port, string serviceName) {
+        public void SetClientSent(int ipv4, int port, string serviceName) 
+        {
             SubmitAddress(zipkinCoreConstants.SERVER_ADDR, ipv4, port, serviceName);
             SubmitStartAnnotation(zipkinCoreConstants.CLIENT_SEND);
         }
@@ -38,7 +41,7 @@ namespace Zipkin.Tracer.Core
             }
         }
 
-        public SpanId StartNewSpan(String requestName)
+        public SpanId StartNewSpan(string requestName)
         {
             bool? sample = SpanAndEndpoint.State.Sample;
             if (sample.HasValue && !sample.Value)
@@ -72,7 +75,7 @@ namespace Zipkin.Tracer.Core
             return newSpanId;
         }
 
-        public void SetCurrentClientServiceName(String serviceName)
+        public void SetCurrentClientServiceName(string serviceName)
         {
             SpanAndEndpoint.State.CurrentClientServiceName = serviceName;
         }

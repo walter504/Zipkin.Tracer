@@ -47,6 +47,10 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="Thrift, Version=0.9.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ApacheThrift.0.9.3\lib\Thrift.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ISpanCollectorBuilder.cs" />
@@ -54,7 +58,7 @@
     <Compile Include="Json\SerializableBinaryAnnotation.cs" />
     <Compile Include="Json\SerializableEndpoint.cs" />
     <Compile Include="Json\SerializableSpan.cs" />
-    <Compile Include="SpanCollector.cs" />
+    <Compile Include="HttpSpanCollector.cs" />
     <Compile Include="SpanCollectorBuilder.cs" />
     <Compile Include="SpanProcessingThread.cs" />
     <Compile Include="SpanProcessor.cs" />

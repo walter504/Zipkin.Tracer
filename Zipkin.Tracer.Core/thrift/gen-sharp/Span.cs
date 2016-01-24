@@ -25,8 +25,8 @@ public partial class Span : TBase
   private string _name;
   private long _id;
   private long _parent_id;
-  private List<Annotation> _annotations;
-  private List<BinaryAnnotation> _binary_annotations;
+  private List<Annotation> _annotations = new List<Annotation>();
+  private List<BinaryAnnotation> _binary_annotations = new List<BinaryAnnotation>();
   private bool _debug;
   private long _timestamp;
   private long _duration;

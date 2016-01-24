@@ -43,6 +43,16 @@
     <Compile Include="ZipkinTraceModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Zipkin.Tracer.Core\Zipkin.Tracer.Core.csproj">
+      <Project>{64e8282a-facd-470f-8066-7f8021bd25f8}</Project>
+      <Name>Zipkin.Tracer.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Zipkin.Tracer.Http\Zipkin.Tracer.Http.csproj">
+      <Project>{4daba6e3-68fa-49e1-bfdb-90203c787e4a}</Project>
+      <Name>Zipkin.Tracer.Http</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

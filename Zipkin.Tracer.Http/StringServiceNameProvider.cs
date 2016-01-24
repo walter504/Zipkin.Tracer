@@ -6,11 +6,13 @@ namespace Zipkin.Tracer.Http
     {
         private readonly string serviceName;
 
-        public StringServiceNameProvider(String serviceName) {
+        public StringServiceNameProvider(String serviceName) 
+        {
             this.serviceName = serviceName;
         }
 
-        public String ServiceName(IHttpRequest request) {
+        public String ServiceName(IHttpRequest request) 
+        {
             return serviceName;
         }
     }

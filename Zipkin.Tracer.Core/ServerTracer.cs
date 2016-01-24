@@ -4,19 +4,20 @@ namespace Zipkin.Tracer.Core
 {
     public class ServerTracer : AnnotationSubmitter
     {
-        public ServerSpanAndEndpoint SpanAndEndpoint { get; set; }
-        Random randomGenerator { get; set; }
-        ISpanCollector spanCollector { get; set; }
-        Sampler traceSampler { get; set; }
+        private ServerSpanAndEndpoint SpanAndEndpoint { get; set; }
+        private ISpanCollector spanCollector { get; set; }
+        private Sampler traceSampler { get; set; }
 
-        public ServerTracer(IServerSpanState state)
-            : this(new ServerSpanAndEndpoint(state))
+        public ServerTracer(IServerSpanState state, ISpanCollector spanCollector, Sampler traceSampler)
+            : this(new ServerSpanAndEndpoint(state), spanCollector, traceSampler)
         {
         }
 
-        public ServerTracer(ServerSpanAndEndpoint spanAndEndpoint)
+        ServerTracer(ServerSpanAndEndpoint spanAndEndpoint, ISpanCollector spanCollector, Sampler traceSampler)
         {
-            SpanAndEndpoint = spanAndEndpoint;
+            base.SpanAndEndpoint = SpanAndEndpoint = spanAndEndpoint;
+            this.spanCollector = spanCollector;
+            this.traceSampler = traceSampler;
         }
 
         public void ClearCurrentSpan()
@@ -24,7 +25,8 @@ namespace Zipkin.Tracer.Core
             SpanAndEndpoint.State.CurrentServerSpan = null;
         }
 
-        public void SetStateCurrentTrace(long traceId, long spanId, long? parentSpanId, string name) {
+        public void SetStateCurrentTrace(long traceId, long spanId, long? parentSpanId, string name) 
+        {
             Ensure.ArgumentNotNullOrEmptyString(name, "Null or blank span name");
             SpanAndEndpoint.State.CurrentServerSpan = new ServerSpan(traceId, spanId, parentSpanId, name);
         }
@@ -51,12 +53,14 @@ namespace Zipkin.Tracer.Core
             SubmitStartAnnotation(zipkinCoreConstants.SERVER_RECV);
         }
 
-        public void SetServerReceived(int ipv4, int port, string clientService) {
+        public void SetServerReceived(int ipv4, int port, string clientService) 
+        {
             SubmitAddress(zipkinCoreConstants.CLIENT_ADDR, ipv4, port, clientService);
             SubmitStartAnnotation(zipkinCoreConstants.SERVER_RECV);
         }
 
-        public void SetServerSend() {
+        public void SetServerSend() 
+        {
             if (SubmitEndAnnotation(zipkinCoreConstants.SERVER_SEND, spanCollector))
             {
                 SpanAndEndpoint.State.CurrentServerSpan = null;

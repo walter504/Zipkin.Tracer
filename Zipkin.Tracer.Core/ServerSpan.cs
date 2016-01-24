@@ -8,37 +8,38 @@ namespace Zipkin.Tracer.Core
         public static readonly ServerSpan NOT_SAMPLED = new ServerSpan(false);
 
         public Span Span { get; private set; }
-        public bool Sample { get; private set; }
+        public bool? Sample { get; private set; }
 
         public ServerSpan()
+            :this(null)
         {
         }
 
-        public ServerSpan(bool sample)
+        public ServerSpan(bool? sample)
+            : this(null, sample)
         {
-            Sample = sample;
         }
 
-        public ServerSpan(Span span, bool sample)
+        public ServerSpan(Span span, bool? sample)
         {
             Span = span;
             Sample = sample;
         }
 
-        public ServerSpan(long traceId, long spanId, long? parentSpanId, string name) {
+        public ServerSpan(long traceId, long spanId, long? parentSpanId, string name) 
+        {
             Span span = new Span()
             {
                 Trace_id = traceId,
                 Id = spanId,
                 Name = name
             };
-            if (parentSpanId != null) {
+            if (parentSpanId != null) 
+            {
                 span.Parent_id = parentSpanId.Value;
             }
             this.Span = span;
             Sample = true;
         }
-
-        
     }
 }

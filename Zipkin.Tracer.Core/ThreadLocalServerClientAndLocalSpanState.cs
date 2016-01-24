@@ -5,13 +5,13 @@ namespace Zipkin.Tracer.Core
 {
     public sealed class ThreadLocalServerClientAndLocalSpanState : IServerClientAndLocalSpanState
     {
-        private readonly static ThreadLocal<ServerSpan> currentServerSpan = new ThreadLocal<ServerSpan>() { Value = new ServerSpan() };
+        private readonly static ThreadLocal<ServerSpan> currentServerSpan = new ThreadLocal<ServerSpan>(() => new ServerSpan());
         private readonly static ThreadLocal<Span> currentClientSpan = new ThreadLocal<Span>();
-        private readonly static ThreadLocal<String> currentClientServiceName = new ThreadLocal<String>();
+        private readonly static ThreadLocal<string> currentClientServiceName = new ThreadLocal<string>();
         private readonly static ThreadLocal<Span> currentLocalSpan = new ThreadLocal<Span>();
         private readonly Endpoint endpoint;
 
-        public ThreadLocalServerClientAndLocalSpanState(int ip, int port, String serviceName)
+        public ThreadLocalServerClientAndLocalSpanState(int ip, int port, string serviceName)
         {
             Ensure.ArgumentNotNull(serviceName, "Service name must be specified.");
             endpoint = new Endpoint() { Ipv4 = ip, Port = (short)port, Service_name = serviceName };
@@ -87,6 +87,5 @@ namespace Zipkin.Tracer.Core
                 currentLocalSpan.Value = value;
             }
         }
-
     }
 }

@@ -4,33 +4,83 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Zipkin.Tracer.Core;
+using Zipkin.Tracer.Http;
 
 namespace Zipkin.Tracer.AspNet.HttpModule
 {
     public class ZipkinTraceModule : IHttpModule
     {
+        private readonly ServerRequestInterceptor requestInterceptor;
+        private readonly ServerResponseInterceptor responseInterceptor;
+        private readonly ISpanNameProvider spanNameProvider;
+
+        public ZipkinTraceModule(ServerRequestInterceptor requestInterceptor, ServerResponseInterceptor responseInterceptor, ISpanNameProvider spanNameProvider)
+        {
+
+            this.requestInterceptor = requestInterceptor;
+            this.spanNameProvider = spanNameProvider;
+            this.responseInterceptor = responseInterceptor;
+        }
 
         public void Init(HttpApplication context)
         {
-            context.BeginRequest += BeginRequest;
-            context.EndRequest += EndRequest;
+            context.PreRequestHandlerExecute += PreRequestHandlerExecute;
+            context.PostRequestHandlerExecute += PostRequestHandlerExecute;
         }
 
-        private void BeginRequest(object sender, EventArgs e)
+        private void PreRequestHandlerExecute(object sender, EventArgs e)
         {
             HttpApplication context = sender as HttpApplication;
-
+            requestInterceptor.Handle(new HttpServerRequestAdapter(new AspNetHttpServerRequest(context.Request), spanNameProvider));
         }
 
-        private void EndRequest(object sender, EventArgs e)
+        private void PostRequestHandlerExecute(object sender, EventArgs e)
         {
             HttpApplication context = sender as HttpApplication;
-
+            responseInterceptor.Handle(new HttpServerResponseAdapter(new AspNetHttpServerResponse(context.Response)));
         }
 
         public void Dispose()
         {
+        }
 
+        class AspNetHttpServerRequest : IHttpServerRequest
+        {
+            private readonly HttpRequest request;
+            public AspNetHttpServerRequest(HttpRequest request)
+            {
+                this.request = request;
+            }
+
+            public Uri GetUri()
+            {
+                return request.Url;
+            }
+
+            public string GetHttpMethod()
+            {
+                return request.HttpMethod;
+            }
+
+            public string GetHttpHeaderValue(string headerName)
+            {
+                return request.Headers[headerName];
+            }
+        }
+
+        class AspNetHttpServerResponse : IHttpResponse
+        {
+            private readonly HttpResponse response;
+            public AspNetHttpServerResponse(HttpResponse response)
+            {
+                this.response = response;
+            }
+
+            public int GetHttpStatusCode()
+            {
+                return response.StatusCode;
+            }
         }
     }
 }

@@ -9,8 +9,10 @@ namespace Zipkin.Tracer.Core
 {
     internal static class Ensure
     {
-        public static T ArgumentNotNull<T>(T reference, string errorMessageTemplate, params object[] errorMessageArgs) {
-            if (reference == null) {
+        public static T ArgumentNotNull<T>(T reference, string errorMessageTemplate, params object[] errorMessageArgs) 
+        {
+            if (reference == null) 
+            {
               // If either of these parameters is null, the right thing happens anyway
                 throw new ArgumentNullException(string.Format(errorMessageTemplate, errorMessageArgs));
             }
@@ -38,7 +40,7 @@ namespace Zipkin.Tracer.Core
             ArgumentNotNull(value, name);
             if (!string.IsNullOrWhiteSpace(value)) return;
 
-            throw new ArgumentException("String cannot be empty", name);
+            throw new ArgumentException("string cannot be empty", name);
         }
 
         /// <summary>

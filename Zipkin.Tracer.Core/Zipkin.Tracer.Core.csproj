@@ -57,6 +57,8 @@
     <Compile Include="Interface\IClientResponseAdapter.cs" />
     <Compile Include="ClientResponseInterceptor.cs" />
     <Compile Include="Interface\ILocalSpanState.cs" />
+    <Compile Include="ClientSpanThreadBinder.cs" />
+    <Compile Include="ServerSpanThreadBinder.cs" />
     <Compile Include="ThreadLocalServerClientAndLocalSpanState.cs" />
     <Compile Include="LocalTracer.cs" />
     <Compile Include="LoggingSpanCollector.cs" />
@@ -91,6 +93,7 @@
     <Compile Include="thrift\gen-sharp\StoreAggregatesException.cs" />
     <Compile Include="thrift\gen-sharp\ZipkinCollector.cs" />
     <Compile Include="thrift\gen-sharp\zipkinCore.Constants.cs" />
+    <Compile Include="ZipkinWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

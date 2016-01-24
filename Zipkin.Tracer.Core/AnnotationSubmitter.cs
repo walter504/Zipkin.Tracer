@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Zipkin.Tracer.Core
 {
@@ -32,10 +33,11 @@ namespace Zipkin.Tracer.Core
             }
         }
 
-        public void SubmitStartAnnotation(String annotationName)
+        public void SubmitStartAnnotation(string annotationName)
         {
             Span span = SpanAndEndpoint.Span;
-            if (span != null) {
+            if (span != null)
+            {
                 Annotation annotation = new Annotation();
                 annotation.Timestamp = Util.GetCurrentTimeStamp();
                 annotation.Host = SpanAndEndpoint.Endpoint;
@@ -48,7 +50,7 @@ namespace Zipkin.Tracer.Core
             }
         }
 
-        public bool SubmitEndAnnotation(String annotationName, ISpanCollector spanCollector)
+        public bool SubmitEndAnnotation(string annotationName, ISpanCollector spanCollector)
         {
             Span span = SpanAndEndpoint.Span;
             if (span == null)
@@ -65,10 +67,11 @@ namespace Zipkin.Tracer.Core
             return true;
         }
 
-        public void SubmitAddress(String key, int ipv4, int port, string serviceName)
+        public void SubmitAddress(string key, int ipv4, int port, string serviceName)
         {
             Span span = SpanAndEndpoint.Span;
-            if (span != null) {
+            if (span != null)
+            {
                 serviceName = serviceName != null ? serviceName : "unknown";
                 BinaryAnnotation ba = new BinaryAnnotation();
                 ba.Key = key;
@@ -79,12 +82,13 @@ namespace Zipkin.Tracer.Core
             }
         }
 
-        public void SubmitBinaryAnnotation(String key, String value)
+        public void SubmitBinaryAnnotation(string key, string value)
         {
             Span span = SpanAndEndpoint.Span;
             if (span != null)
             {
-                BinaryAnnotation ba = new BinaryAnnotation() {
+                BinaryAnnotation ba = new BinaryAnnotation()
+                {
                     Key = key,
                     Value = value,
                     Host = SpanAndEndpoint.Endpoint
@@ -93,22 +97,32 @@ namespace Zipkin.Tracer.Core
             }
         }
 
-        public void SubmitBinaryAnnotation(String key, int value)
+        public void SubmitBinaryAnnotation(string key, int value)
         {
             // Zipkin v1 UI and query only support String annotations.
             SubmitBinaryAnnotation(key, value.ToString());
         }
 
-        private void AddAnnotation(Span span, Annotation annotation) {
+        private void AddAnnotation(Span span, Annotation annotation)
+        {
             lock (span)
             {
+                if (span.Annotations == null)
+                {
+                    span.Annotations = new List<Annotation>();
+                }
                 span.Annotations.Add(annotation);
             }
         }
 
-        private void AddBinaryAnnotation(Span span, BinaryAnnotation ba) {
+        private void AddBinaryAnnotation(Span span, BinaryAnnotation ba)
+        {
             lock (span)
             {
+                if (span.Binary_annotations == null)
+                {
+                    span.Binary_annotations = new List<BinaryAnnotation>();
+                }
                 span.Binary_annotations.Add(ba);
             }
         }

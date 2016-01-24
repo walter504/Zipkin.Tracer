@@ -1,29 +1,30 @@
 ﻿using log4net;
 using System;
 using System.Collections.Concurrent;
+using Zipkin.Tracer.Core;
 
 namespace Zipkin.Tracer.SpanCollector
 {
-    public class SpanCollector
+    public class HttpSpanCollector : ISpanCollector
     {
         private const int MAX_QUEUE_SIZE = 100;
         internal static BlockingCollection<Span> spanQueue;
 
         internal SpanProcessor spanProcessor;
 
-        private static SpanCollector instance;
+        private static HttpSpanCollector instance;
 
-        public static SpanCollector GetInstance(Uri uri, int maxProcessorBatchSize, ILog logger)
+        public static HttpSpanCollector GetInstance(Uri uri, int maxProcessorBatchSize, ILog logger)
         {
             if (instance == null)
             {
-                instance = new SpanCollector(uri, maxProcessorBatchSize, logger);
+                instance = new HttpSpanCollector(uri, maxProcessorBatchSize, logger);
                 instance.Start();
             }
             return instance;
         }
 
-        public SpanCollector(Uri uri, int maxProcessorBatchSize, ILog logger)
+        public HttpSpanCollector(Uri uri, int maxProcessorBatchSize, ILog logger)
         {
             if ( spanQueue == null)
             {

@@ -4,17 +4,20 @@ namespace Zipkin.Tracer.Core
 {
     public class LocalTracer : AnnotationSubmitter
     {
-        public LocalSpanAndEndpoint SpanAndEndpoint { get; set; }
+        LocalSpanAndEndpoint SpanAndEndpoint { get; set; }
         ISpanCollector spanCollector { get; set; }
         Sampler traceSampler { get; set; }
 
-        public LocalTracer()
+        public LocalTracer(IServerClientAndLocalSpanState state, ISpanCollector spanCollector, Sampler traceSampler)
+            : this(new LocalSpanAndEndpoint(state), spanCollector, traceSampler)
         {
         }
 
-        public LocalTracer(LocalSpanAndEndpoint spanAndEndpoint)
+        LocalTracer(LocalSpanAndEndpoint spanAndEndpoint, ISpanCollector spanCollector, Sampler traceSampler)
         {
-            SpanAndEndpoint = spanAndEndpoint;
+            base.SpanAndEndpoint = SpanAndEndpoint = spanAndEndpoint;
+            this.spanCollector = spanCollector;
+            this.traceSampler = traceSampler;
         }
 
         /**
@@ -25,7 +28,7 @@ namespace Zipkin.Tracer.Core
          * @return metadata about the new span or null if one wasn't started due to sampling policy.
          * @see zipkinCoreConstants#LOCAL_COMPONENT
          */
-        public SpanId StartNewSpan(String component, String operation)
+        public SpanId StartNewSpan(string component, string operation)
         {
             SpanId spanId = StartNewSpan(component, operation, Util.GetCurrentTimeStamp());
             if (spanId == null) return null;
