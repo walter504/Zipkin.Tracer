@@ -1,5 +1,6 @@
 ﻿using System;
 using log4net;
+using Zipkin.Tracer.Core;
 
 namespace Zipkin.Tracer.SpanCollector
 {

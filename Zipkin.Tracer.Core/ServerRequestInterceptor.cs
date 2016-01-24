@@ -25,7 +25,7 @@ namespace Zipkin.Tracer.Core
                 if (traceData.SpanId != null)
                 {
                     SpanId spanId = traceData.SpanId;
-                    serverTracer.SetStateCurrentTrace(spanId.TraceId, spanId.Id,
+                    serverTracer.SetStateCurrentTrace(spanId.TraceId, spanId.Id, 
                         spanId.ParentSpanId, adapter.GetSpanName());
                 }
                 else
