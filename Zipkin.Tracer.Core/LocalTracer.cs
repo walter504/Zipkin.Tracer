@@ -30,7 +30,7 @@ namespace Zipkin.Tracer.Core
          */
         public SpanId StartNewSpan(string component, string operation)
         {
-            SpanId spanId = StartNewSpan(component, operation, Util.GetCurrentTimeStamp());
+            SpanId spanId = StartNewSpan(component, operation, Util.CurrentTimeMicroseconds());
             if (spanId == null) return null;
             SpanAndEndpoint.Span.startTick = DateTime.Now.Ticks; // embezzle start tick into an internal field.
             return spanId;
@@ -39,7 +39,7 @@ namespace Zipkin.Tracer.Core
         private SpanId GetNewSpanId()
         {
             Span currentServerSpan = SpanAndEndpoint.State.CurrentServerSpan.Span;
-            long newSpanId = Util.GetRandomId();
+            long newSpanId = Util.NextLong();
             if (currentServerSpan == null)
             {
                 return new SpanId(newSpanId, newSpanId, null);
@@ -107,15 +107,14 @@ namespace Zipkin.Tracer.Core
             Span span = SpanAndEndpoint.Span;
             if (span == null) return;
 
-            var startTick = span.startTick;
             long duration;
-            if (startTick.HasValue)
+            if (span.startTick.HasValue)
             {
-                duration = (endTick - startTick.Value) / 1000;
+                duration = (endTick - span.startTick.Value) / 10;
             }
             else
             {
-                duration = Util.GetCurrentTimeStamp() - span.Timestamp;
+                duration = Util.CurrentTimeMicroseconds() - span.Timestamp;
             }
             FinishSpan(duration);
         }

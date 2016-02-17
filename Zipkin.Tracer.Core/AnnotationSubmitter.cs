@@ -13,7 +13,7 @@ namespace Zipkin.Tracer.Core
             if (span != null)
             {
                 Annotation annotation = new Annotation();
-                annotation.Timestamp = Util.GetCurrentTimeStamp();
+                annotation.Timestamp = Util.CurrentTimeMicroseconds();
                 annotation.Host = SpanAndEndpoint.Endpoint;
                 annotation.Value = value;
                 AddAnnotation(span, annotation);
@@ -39,7 +39,7 @@ namespace Zipkin.Tracer.Core
             if (span != null)
             {
                 Annotation annotation = new Annotation();
-                annotation.Timestamp = Util.GetCurrentTimeStamp();
+                annotation.Timestamp = Util.CurrentTimeMicroseconds();
                 annotation.Host = SpanAndEndpoint.Endpoint;
                 annotation.Value = annotationName;
                 lock (span)
@@ -58,7 +58,7 @@ namespace Zipkin.Tracer.Core
                 return false;
             }
             Annotation annotation = new Annotation();
-            annotation.Timestamp = Util.GetCurrentTimeStamp();
+            annotation.Timestamp = Util.CurrentTimeMicroseconds();
             annotation.Host = SpanAndEndpoint.Endpoint;
             annotation.Value = annotationName;
             span.Annotations.Add(annotation);

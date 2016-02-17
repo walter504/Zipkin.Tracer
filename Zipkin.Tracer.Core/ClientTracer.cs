@@ -91,7 +91,7 @@ namespace Zipkin.Tracer.Core
                     parentSpan = serverSpan.Span;
                 }
             }
-            long newSpanId = Util.GetRandomId();
+            long newSpanId = Util.NextLong();
             if (parentSpan == null)
             {
                 return new SpanId(newSpanId, newSpanId, null);

@@ -39,7 +39,7 @@ namespace Zipkin.Tracer.Core
         public void SetStateUnknown(string spanName)
         {
             Ensure.ArgumentNotNullOrEmptyString(spanName, "Null or blank span name");
-            long newTraceId = Util.GetRandomId();
+            long newTraceId = Util.NextLong();
             if (!traceSampler.IsSampled(newTraceId))
             {
                 SpanAndEndpoint.State.CurrentServerSpan = ServerSpan.NOT_SAMPLED;

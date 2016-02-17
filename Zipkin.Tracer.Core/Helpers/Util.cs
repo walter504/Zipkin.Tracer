@@ -8,18 +8,12 @@ namespace Zipkin.Tracer.Core
 {
     public class Util
     {
-        private static Random randomGenerator = new Random(DateTime.Now.Millisecond);
-        public static long GetCurrentTimeStamp()
+        private static Random rnd = new Random(DateTime.Now.Millisecond);
+        private static DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        
+        public static long NextLong()
         {
-            var t = DateTime.UtcNow - new DateTime(1970, 1, 1);
-            return Convert.ToInt64(t.TotalMilliseconds * 1000);
-        }
-
-        public static long GetRandomId()
-        {
-            byte[] buffer = new byte[8];
-            randomGenerator.NextBytes(buffer);
-            return BitConverter.ToInt64(buffer, 0);
+            return (long)(rnd.NextDouble() * long.MaxValue);
         }
 
         public static long HexToLong(string hex)
@@ -30,6 +24,39 @@ namespace Zipkin.Tracer.Core
         public static string LongToHex(long input)
         {
             return input.ToString("x4");
+        }
+
+        public static long CurrentTimeSeconds()
+        {
+            return ToUnixTimeSeconds(DateTime.Now);
+        }
+
+        public static long CurrentTimeMilliseconds()
+        {
+            return ToUnixTimeMilliseconds(DateTime.Now);
+        }
+
+        public static long CurrentTimeMicroseconds()
+        {
+            return ToUnixTimMicroseconds(DateTime.Now);
+        }
+
+        public static long ToUnixTimeSeconds(DateTime dt)
+        {
+            TimeSpan timespan = TimeZoneInfo.ConvertTimeToUtc(dt).Subtract(UnixEpoch);
+            return timespan.Ticks / 10000000;
+        }
+
+        public static long ToUnixTimeMilliseconds(DateTime dt)
+        {
+            TimeSpan timespan = TimeZoneInfo.ConvertTimeToUtc(dt).Subtract(UnixEpoch);
+            return timespan.Ticks / 10000;
+        }
+
+        public static long ToUnixTimMicroseconds(DateTime dt)
+        {
+            TimeSpan timespan = TimeZoneInfo.ConvertTimeToUtc(dt).Subtract(UnixEpoch);
+            return timespan.Ticks / 10;
         }
     }
 }
