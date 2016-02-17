@@ -60,7 +60,6 @@
     <Compile Include="Json\SerializableSpan.cs" />
     <Compile Include="HttpSpanCollector.cs" />
     <Compile Include="SpanCollectorBuilder.cs" />
-    <Compile Include="SpanProcessingThread.cs" />
     <Compile Include="SpanProcessor.cs" />
     <Compile Include="SpanProcessorTaskFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
