@@ -62,7 +62,7 @@ namespace Zipkin.Tracer.Core
             {
                 try
                 {
-                    int ip = (int)System.Net.Dns.GetHostAddresses("localhost")[1].Address;
+                    int ip = Util.GetLocalIPInt();
                     state = new ThreadLocalServerClientAndLocalSpanState(ip, 0, serviceName);
                 }
                 catch (System.Net.Sockets.SocketException e)

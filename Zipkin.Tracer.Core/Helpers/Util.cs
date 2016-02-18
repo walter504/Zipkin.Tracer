@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -57,6 +59,24 @@ namespace Zipkin.Tracer.Core
         {
             TimeSpan timespan = TimeZoneInfo.ConvertTimeToUtc(dt).Subtract(UnixEpoch);
             return timespan.Ticks / 10;
+        }
+
+        public static IPAddress GetLocalIPAddress()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            return host.AddressList.FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+        }
+
+        public static int GetLocalIPInt()
+        {
+            var ip = GetLocalIPAddress();
+            if (ip != null)
+            {
+                byte[] bytes = ip.GetAddressBytes();
+                Array.Reverse(bytes);
+                return BitConverter.ToInt32(bytes, 0);
+            }
+            return 127 << 24 | 1;
         }
     }
 }
