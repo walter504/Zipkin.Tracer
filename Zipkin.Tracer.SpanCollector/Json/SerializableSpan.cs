@@ -8,30 +8,25 @@ namespace Zipkin.Tracer.SpanCollector
     {
         public SerializableSpan(Span span)
         {
-            TraceId = span.Trace_id.ToString("x4");
-            Name = span.Name;
-            Id = span.Id.ToString("x4");
-            Annotations = span.Annotations == null ? null : span.Annotations.ConvertAll(t => new SerializableAnnotation(t));
-            ParentId = span.__isset.parent_id ? span.Parent_id.ToString("x4") : null;
-            BinaryAnnotations = span.Binary_annotations == null ? null : span.Binary_annotations.ConvertAll(t => new SerializableBinaryAnnotation(t));
+            traceId = span.Trace_id.ToString("x4");
+            name = span.Name;
+            id = span.Id.ToString("x4");
+            parentId = span.__isset.parent_id ? span.Parent_id.ToString("x4") : null;
+            annotations = span.Annotations == null ? null : span.Annotations.ConvertAll(t => new SerializableAnnotation(t));
+            binaryAnnotations = span.Binary_annotations == null ? null : span.Binary_annotations.ConvertAll(t => new SerializableBinaryAnnotation(t));
         }
 
-        [JsonProperty("traceId")]
-        public string TraceId { get; private set; }
+        public string traceId { get; private set; }
 
-        [JsonProperty("name")]        
-        public string Name { get; private set; }
+        public string name { get; private set; }
 
-        [JsonProperty("id")]
-        public string Id { get; private set; }
+        public string id { get; private set; }
 
-        [JsonProperty("parentId",DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public string ParentId { get; private set; }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string parentId { get; private set; }
 
-        [JsonProperty("annotations")]
-        public List<SerializableAnnotation> Annotations { get; private set; }
+        public List<SerializableAnnotation> annotations { get; private set; }
 
-        [JsonProperty("binaryAnnotations")]
-        public List<SerializableBinaryAnnotation> BinaryAnnotations { get; private set; }
+        public List<SerializableBinaryAnnotation> binaryAnnotations { get; private set; }
     }
 }

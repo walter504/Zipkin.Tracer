@@ -44,9 +44,9 @@ namespace Zipkin.Tracer.Core
             {
                 if (currentClientServiceName.Value == null)
                 {
-                    endpoint.Service_name = currentClientServiceName.Value;
+                    return endpoint;
                 }
-                return endpoint;
+                return new Endpoint() { Ipv4 = endpoint.Ipv4, Port = endpoint.Port, Service_name = currentClientServiceName.Value };
             }
         }
         public Span CurrentClientSpan

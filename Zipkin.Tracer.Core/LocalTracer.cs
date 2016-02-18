@@ -87,12 +87,7 @@ namespace Zipkin.Tracer.Core
             newSpan.Name = operation;
             newSpan.Timestamp = timestamp;
             newSpan.Binary_annotations.Add(
-                new BinaryAnnotation()
-                {
-                    Key = zipkinCoreConstants.LOCAL_COMPONENT,
-                    Value = component,
-                    Host = SpanAndEndpoint.Endpoint
-                });
+                new BinaryAnnotation(zipkinCoreConstants.LOCAL_COMPONENT, component, SpanAndEndpoint.Endpoint));
             SpanAndEndpoint.State.CurrentLocalSpan = newSpan;
             return newSpanId;
         }

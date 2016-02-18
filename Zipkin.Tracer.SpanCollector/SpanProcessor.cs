@@ -78,8 +78,9 @@ namespace Zipkin.Tracer.SpanCollector
             {
                 try
                 {
-                    client.Headers.Add("Content-Type", "application/json");
                     client.BaseAddress = uri.ToString();
+                    client.Encoding = System.Text.Encoding.UTF8;
+                    client.Headers.Add("Content-Type", "application/json");
                     client.UploadString(ZIPKIN_SPAN_POST_PATH, "POST", spans);
                 }
                 catch (WebException ex)

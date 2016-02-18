@@ -75,7 +75,7 @@ namespace Zipkin.Tracer.Core
                 serviceName = serviceName != null ? serviceName : "unknown";
                 BinaryAnnotation ba = new BinaryAnnotation();
                 ba.Key = key;
-                ba.Value = string.Empty;
+                ba.Value = new byte[] { 1 };
                 ba.Annotation_type = AnnotationType.BOOL;
                 ba.Host = new Endpoint() { Ipv4 = ipv4, Port = (short)port, Service_name = serviceName };
                 AddBinaryAnnotation(span, ba);
@@ -87,12 +87,7 @@ namespace Zipkin.Tracer.Core
             Span span = SpanAndEndpoint.Span;
             if (span != null)
             {
-                BinaryAnnotation ba = new BinaryAnnotation()
-                {
-                    Key = key,
-                    Value = value,
-                    Host = SpanAndEndpoint.Endpoint
-                };
+                BinaryAnnotation ba = new BinaryAnnotation(key, value, SpanAndEndpoint.Endpoint);
                 AddBinaryAnnotation(span, ba);
             }
         }

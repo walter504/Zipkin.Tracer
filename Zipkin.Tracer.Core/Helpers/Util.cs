@@ -73,7 +73,7 @@ namespace Zipkin.Tracer.Core
             if (ip != null)
             {
                 byte[] bytes = ip.GetAddressBytes();
-                Array.Reverse(bytes);
+                //Array.Reverse(bytes);
                 return BitConverter.ToInt32(bytes, 0);
             }
             return 127 << 24 | 1;

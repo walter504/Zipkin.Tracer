@@ -7,18 +7,15 @@ namespace Zipkin.Tracer.SpanCollector
     {
         public SerializableAnnotation(Annotation annotation)
         {
-            TimeStamp = annotation.Timestamp;
-            Value = annotation.Value;
-            SerializableEndpoint = new SerializableEndpoint(annotation.Host);
+            timestamp = annotation.Timestamp;
+            value = annotation.Value;
+            endpoint = new SerializableEndpoint(annotation.Host);
         }
 
-        [JsonProperty("timestamp")]
-        public long TimeStamp { get; private set; }
+        public long timestamp { get; private set; }
         
-        [JsonProperty("value")]
-        public string Value { get; private set; }
+        public string value { get; private set; }
         
-        [JsonProperty("endpoint")]
-        public SerializableEndpoint SerializableEndpoint { get; private set; }
+        public SerializableEndpoint endpoint { get; private set; }
     }
 }

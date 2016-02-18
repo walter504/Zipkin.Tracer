@@ -14,6 +14,7 @@ using Thrift.Collections;
 using System.Runtime.Serialization;
 using Thrift.Protocol;
 using Thrift.Transport;
+using Zipkin.Tracer.Core;
 
 
 #if !SILVERLIGHT
@@ -22,7 +23,7 @@ using Thrift.Transport;
 public partial class BinaryAnnotation : TBase
 {
   private string _key;
-  private string _value;
+  private byte[] _value;
   private AnnotationType _annotation_type;
   private Endpoint _host;
 
@@ -39,7 +40,7 @@ public partial class BinaryAnnotation : TBase
     }
   }
 
-  public string Value
+  public byte[] Value
   {
     get
     {
@@ -97,6 +98,19 @@ public partial class BinaryAnnotation : TBase
   public BinaryAnnotation() {
   }
 
+  public BinaryAnnotation(string key, string value)
+      :this(key, value, null)
+  {
+  }
+
+  public BinaryAnnotation(string key, string value, Endpoint host)
+  {
+      this.Key = Ensure.ArgumentNotNull(key, "Null or blank key");
+      this.Value = System.Text.Encoding.UTF8.GetBytes(Ensure.ArgumentNotNull(value, "Null or blank key"));
+      this.Annotation_type = AnnotationType.STRING;
+      this.Host = host;
+  }
+
   public void Read (TProtocol iprot)
   {
     TField field;
@@ -118,7 +132,7 @@ public partial class BinaryAnnotation : TBase
           break;
         case 2:
           if (field.Type == TType.String) {
-            Value = iprot.ReadString();
+            Value = iprot.ReadBinary();
           } else { 
             TProtocolUtil.Skip(iprot, field.Type);
           }
@@ -164,7 +178,7 @@ public partial class BinaryAnnotation : TBase
       field.Type = TType.String;
       field.ID = 2;
       oprot.WriteFieldBegin(field);
-      oprot.WriteString(Value);
+      oprot.WriteBinary(Value);
       oprot.WriteFieldEnd();
     }
     if (__isset.annotation_type) {

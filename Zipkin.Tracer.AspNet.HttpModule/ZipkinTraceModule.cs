@@ -17,7 +17,6 @@ namespace Zipkin.Tracer.AspNet.HttpModule
 
         public ZipkinTraceModule(ServerRequestInterceptor requestInterceptor, ServerResponseInterceptor responseInterceptor, ISpanNameProvider spanNameProvider)
         {
-
             this.requestInterceptor = requestInterceptor;
             this.spanNameProvider = spanNameProvider;
             this.responseInterceptor = responseInterceptor;
@@ -31,14 +30,20 @@ namespace Zipkin.Tracer.AspNet.HttpModule
 
         private void PreRequestHandlerExecute(object sender, EventArgs e)
         {
-            HttpApplication context = sender as HttpApplication;
-            requestInterceptor.Handle(new HttpServerRequestAdapter(new AspNetHttpServerRequest(context.Request), spanNameProvider));
+            var app = sender as HttpApplication;
+            if (app.Context.Handler is System.Web.UI.Page)
+            {
+                requestInterceptor.Handle(new HttpServerRequestAdapter(new AspNetHttpServerRequest(app.Request), spanNameProvider));
+            }
         }
 
         private void PostRequestHandlerExecute(object sender, EventArgs e)
         {
-            HttpApplication context = sender as HttpApplication;
-            responseInterceptor.Handle(new HttpServerResponseAdapter(new AspNetHttpServerResponse(context.Response)));
+            HttpApplication app = sender as HttpApplication;
+            if (app.Context.Handler is System.Web.UI.Page)
+            {
+                responseInterceptor.Handle(new HttpServerResponseAdapter(new AspNetHttpServerResponse(app.Response)));
+            }
         }
 
         public void Dispose()
