@@ -93,6 +93,7 @@
     <Compile Include="thrift\gen-sharp\StoreAggregatesException.cs" />
     <Compile Include="thrift\gen-sharp\ZipkinCollector.cs" />
     <Compile Include="thrift\gen-sharp\zipkinCore.Constants.cs" />
+    <Compile Include="ZipkinTracer.cs" />
     <Compile Include="ZipkinWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
