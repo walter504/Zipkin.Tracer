@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnnotationSubmitter.cs" />
+    <Compile Include="LocalSpanThreadBinder.cs" />
     <Compile Include="Helpers\Util.cs" />
     <Compile Include="Interface\IServerResponseAdapter.cs" />
     <Compile Include="Interface\IServerRequestAdapter.cs" />

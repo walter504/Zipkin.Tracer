@@ -55,5 +55,45 @@ namespace Zipkin.Tracer.Core
         {
             zipkin.LocalTracer().FinishSpan();
         }
+
+        public static void RecordLocal(string value)
+        {
+            zipkin.LocalTracer().SubmitAnnotation(value);
+        }
+
+        public static void RecordLocal(string name, string value)
+        {
+            zipkin.LocalTracer().SubmitBinaryAnnotation(name, value);
+        }
+
+        public static ServerSpan GetCurrentServerSpan()
+        {
+            return zipkin.ServerSpanThreadBinder().GetCurrentServerSpan(); 
+        }
+
+        public static void SetCurrentServerSpan(ServerSpan span)
+        {
+            zipkin.ServerSpanThreadBinder().SetCurrentSpan(span);
+        }
+
+        public static Span GetCurrentClientSpan()
+        {
+            return zipkin.ClientSpanThreadBinder().GetCurrentClientSpan();
+        }
+
+        public static void SetCurrentClientSpan(Span span)
+        {
+            zipkin.ClientSpanThreadBinder().SetCurrentSpan(span);
+        }
+
+        public static Span GetCurrentLocalSpan()
+        {
+            return zipkin.LocalSpanThreadBinder().GetCurrentLocalSpan();
+        }
+
+        public static void SetCurrentLocalSpan(Span span)
+        {
+            zipkin.LocalSpanThreadBinder().SetCurrentSpan(span);
+        }
     }
 }

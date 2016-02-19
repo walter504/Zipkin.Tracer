@@ -18,6 +18,8 @@ namespace Zipkin.Tracer.Core
         private readonly AnnotationSubmitter serverSpanAnnotationSubmitter;
         private readonly ServerSpanThreadBinder serverSpanThreadBinder;
         private readonly ClientSpanThreadBinder clientSpanThreadBinder;
+        private readonly LocalSpanThreadBinder localSpanThreadBinder;
+        
 
         /**
          * Builds Brave api objects with following defaults if not overridden:
@@ -192,6 +194,11 @@ namespace Zipkin.Tracer.Core
             return clientSpanThreadBinder;
         }
 
+        public LocalSpanThreadBinder LocalSpanThreadBinder()
+        {
+            return localSpanThreadBinder;
+        }
+
         /**
          * Can be used to submit application specific annotations to the current server span.
          *
@@ -215,6 +222,7 @@ namespace Zipkin.Tracer.Core
             //serverSpanAnnotationSubmitter = AnnotationSubmitter.create(SpanAndEndpoint.ServerSpanAndEndpoint.create(builder.state));
             serverSpanThreadBinder = new ServerSpanThreadBinder(builder.state);
             clientSpanThreadBinder = new ClientSpanThreadBinder(builder.state);
+            localSpanThreadBinder = new LocalSpanThreadBinder(builder.state);
         }
     }
 }
