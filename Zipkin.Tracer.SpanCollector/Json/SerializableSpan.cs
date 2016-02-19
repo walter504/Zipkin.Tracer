@@ -12,6 +12,14 @@ namespace Zipkin.Tracer.SpanCollector
             name = span.Name;
             id = span.Id.ToString("x4");
             parentId = span.__isset.parent_id ? span.Parent_id.ToString("x4") : null;
+            if (span.__isset.timestamp)
+            {
+                timestamp = span.Timestamp;
+            }
+            if (span.__isset.duration)
+            {
+                duration = span.Duration;
+            }
             annotations = span.Annotations == null ? null : span.Annotations.ConvertAll(t => new SerializableAnnotation(t));
             binaryAnnotations = span.Binary_annotations == null ? null : span.Binary_annotations.ConvertAll(t => new SerializableBinaryAnnotation(t));
         }
@@ -24,6 +32,12 @@ namespace Zipkin.Tracer.SpanCollector
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string parentId { get; private set; }
+
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public long? timestamp { get; set; }
+
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public long? duration { get; set; }
 
         public List<SerializableAnnotation> annotations { get; private set; }
 

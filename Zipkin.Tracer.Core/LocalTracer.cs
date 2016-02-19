@@ -60,7 +60,7 @@ namespace Zipkin.Tracer.Core
         {
 
             bool? sample = SpanAndEndpoint.State.Sample;
-            if (sample.HasValue || !sample.Value)
+            if (sample.HasValue && !sample.Value)
             {
                 SpanAndEndpoint.State.CurrentLocalSpan = null;
                 return null;
