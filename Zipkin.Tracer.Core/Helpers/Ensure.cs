@@ -9,6 +9,14 @@ namespace Zipkin.Tracer.Core
 {
     internal static class Ensure
     {
+        public static void ArgumentAssert(bool expression, string errorMessageTemplate, params object[] errorMessageArgs)
+        {
+            if (!expression)
+            {
+                throw new ArgumentException(string.Format(errorMessageTemplate, errorMessageArgs));
+            }
+        }
+
         public static T ArgumentNotNull<T>(T reference, string errorMessageTemplate, params object[] errorMessageArgs) 
         {
             if (reference == null) 

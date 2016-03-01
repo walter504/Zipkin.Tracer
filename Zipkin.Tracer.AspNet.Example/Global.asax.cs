@@ -31,8 +31,8 @@ namespace Zipkin.Tracer.AspNet.Example
             builder.RegisterInstance(logger).SingleInstance();
             var spanCollector = HttpSpanCollector.GetInstance(new Uri("http://localhost:9411"), 1, logger);
             ZipkinWrapper.Builder zipkinBuilder = new ZipkinWrapper.Builder("ZipkinTracerIntegration")
-                    .SpanCollector(spanCollector);
-            var wrapper = zipkinBuilder.build();
+                    .SpanCollector(spanCollector).TraceSampler(Sampler.create(0.5F));
+            var wrapper = zipkinBuilder.Build();
             ZipkinTracer.Initialize(wrapper);
             builder.RegisterInstance(wrapper.ServerTracer()).SingleInstance();
             builder.RegisterInstance(wrapper.ClientTracer()).SingleInstance();
