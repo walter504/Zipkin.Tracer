@@ -6,8 +6,8 @@ namespace Zipkin.Tracer.Core
     {
         public abstract bool IsSampled(long traceId);
 
-        private readonly static Sampler ALWAYS_SAMPLE = new AlwaysSampler();
-        private readonly static Sampler NEVER_SAMPLE = new NeverSampler();
+        private static readonly Sampler ALWAYS_SAMPLE = new AlwaysSampler();
+        private static readonly Sampler NEVER_SAMPLE = new NeverSampler();
 
         public static Sampler create(float rate)
         {

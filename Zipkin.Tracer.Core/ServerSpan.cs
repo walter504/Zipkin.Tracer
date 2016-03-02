@@ -4,7 +4,7 @@ namespace Zipkin.Tracer.Core
 {
     public class ServerSpan
     {
-        public readonly static ServerSpan EMPTY = new ServerSpan();
+        public static readonly ServerSpan EMPTY = new ServerSpan();
         public static readonly ServerSpan NOT_SAMPLED = new ServerSpan(false);
 
         public Span Span { get; private set; }
