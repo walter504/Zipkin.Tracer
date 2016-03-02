@@ -9,7 +9,7 @@ namespace Zipkin.Tracer.Core
         private static readonly Sampler ALWAYS_SAMPLE = new AlwaysSampler();
         private static readonly Sampler NEVER_SAMPLE = new NeverSampler();
 
-        public static Sampler create(float rate)
+        public static Sampler Create(float rate)
         {
             if (rate == 0.0F) return NEVER_SAMPLE;
             if (rate == 1.0F) return ALWAYS_SAMPLE;

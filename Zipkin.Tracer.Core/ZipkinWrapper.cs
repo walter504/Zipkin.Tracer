@@ -35,7 +35,7 @@ namespace Zipkin.Tracer.Core
             internal readonly IServerClientAndLocalSpanState state;
             internal ISpanCollector spanCollector = new LoggingSpanCollector();
             // default added so callers don't need to check null.
-            internal Sampler sampler = Sampler.create(1.0F);
+            internal Sampler sampler = Sampler.Create(1.0F);
 
             /**
              * Builder which initializes with serviceName = "unknown".
