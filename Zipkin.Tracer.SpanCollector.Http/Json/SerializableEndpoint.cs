@@ -2,7 +2,7 @@
 using System.Net;
 using Newtonsoft.Json;
 
-namespace Zipkin.Tracer.SpanCollector
+namespace Zipkin.Tracer.SpanCollector.Http
 {
     public class SerializableEndpoint
     {

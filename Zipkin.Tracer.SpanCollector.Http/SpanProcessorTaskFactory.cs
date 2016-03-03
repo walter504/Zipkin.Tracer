@@ -4,11 +4,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Zipkin.Tracer.SpanCollector
+namespace Zipkin.Tracer.SpanCollector.Http
 {
     public class SpanProcessorTaskFactory
     {
-        private Task spanProcessorTaskInstance;
+        private Task task;
         private CancellationTokenSource cancellationTokenSource;
         private ILog logger;
 
@@ -26,17 +26,16 @@ namespace Zipkin.Tracer.SpanCollector
         }
 
         [ExcludeFromCodeCoverage]  //excluded from code coverage since this class is a 1 liner that starts up a background thread
-        public virtual void CreateAndStart(Action action)
+        public void CreateAndStart(Action action)
         {
-            if (spanProcessorTaskInstance == null
-                || spanProcessorTaskInstance.Status == TaskStatus.Faulted)
+            if (task == null || task.Status == TaskStatus.Faulted)
             {
-                spanProcessorTaskInstance = new Task(() => ActionWrapper(action), cancellationTokenSource.Token, TaskCreationOptions.LongRunning);
-                spanProcessorTaskInstance.Start();
+                task = new Task(() => ActionWrapper(action), cancellationTokenSource.Token, TaskCreationOptions.LongRunning);
+                task.Start();
             }
         }
 
-        public virtual void StopTask()
+        public void StopTask()
         {
             cancellationTokenSource.Cancel();
         }
@@ -53,13 +52,13 @@ namespace Zipkin.Tracer.SpanCollector
                 catch (Exception ex)
                 {
                     logger.Error("Error in SpanProcessorTask", ex);
-                    delayTime = 30000;
+                    delayTime = 3000;
                 }
                 await Task.Delay(delayTime, cancellationTokenSource.Token);
             }
         }
 
-        public virtual bool IsTaskCancelled()
+        public bool IsTaskCancelled()
         {
             return cancellationTokenSource.IsCancellationRequested;
         }

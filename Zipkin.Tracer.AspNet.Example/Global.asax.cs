@@ -10,7 +10,7 @@ using System.Web.SessionState;
 using Zipkin.Tracer.AspNet.HttpModule;
 using Zipkin.Tracer.Core;
 using Zipkin.Tracer.Http;
-using Zipkin.Tracer.SpanCollector;
+using Zipkin.Tracer.SpanCollector.Http;
 
 namespace Zipkin.Tracer.AspNet.Example
 {
@@ -29,7 +29,7 @@ namespace Zipkin.Tracer.AspNet.Example
         {
             log4net.ILog logger = log4net.LogManager.GetLogger("ZipkinLogger");
             builder.RegisterInstance(logger).SingleInstance();
-            var spanCollector = HttpSpanCollector.GetInstance(new Uri("http://localhost:9411"), 1, logger);
+            var spanCollector = new HttpSpanCollector("http://192.168.1.232:9411", 1, logger);
             ZipkinWrapper.Builder zipkinBuilder = new ZipkinWrapper.Builder("ZipkinTracerIntegration")
                     .SpanCollector(spanCollector).TraceSampler(Sampler.Create(0.5F));
             var wrapper = zipkinBuilder.Build();

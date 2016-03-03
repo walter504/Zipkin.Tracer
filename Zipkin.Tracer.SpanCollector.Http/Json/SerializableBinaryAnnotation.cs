@@ -2,7 +2,7 @@
 using System;
 using System.Text;
 
-namespace Zipkin.Tracer.SpanCollector
+namespace Zipkin.Tracer.SpanCollector.Http
 {
     public class SerializableBinaryAnnotation
     {
