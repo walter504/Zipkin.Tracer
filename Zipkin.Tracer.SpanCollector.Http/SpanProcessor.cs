@@ -13,8 +13,11 @@ namespace Zipkin.Tracer.SpanCollector.Http
     {
         //send contents of queue if it has pending items but less than max batch size after doing max number of polls
         private const int MAX_NUMBER_OF_POLLS = 5;
+        private const int MAX_SUBSEQUENT_EMPTY_BATCHES = 2;
         private int connectTimeout = 30 * 1000;
         private int readTimeout = 60 * 1000;
+        private volatile bool stop = false;
+        private int processedSpansNum = 0;
         private int subsequentPollCount;
         private int maxBatchSize;
         private readonly string url;
@@ -41,6 +44,36 @@ namespace Zipkin.Tracer.SpanCollector.Http
             this.maxBatchSize = maxBatchSize;
             this.logger = logger;
             taskFactory = new SpanProcessorTaskFactory(logger);
+        }
+
+        public int Execute()
+        {
+            int subsequentEmptyBatches = 0;
+            do
+            {
+                try
+                {
+                    Span span;
+                    if (queue.TryTake(out span))
+                    {
+
+                    }
+                    else
+                    {
+                        subsequentEmptyBatches++;
+                    }
+
+                    if (subsequentEmptyBatches >= MAX_SUBSEQUENT_EMPTY_BATCHES)
+                    {
+                        subsequentEmptyBatches = 0;
+                    }
+                }
+                catch (Exception e)
+                {
+                    logger.Warn("Unexpected exception flushing spans", e);
+                }
+            } while (stop);
+            return processedSpansNum;
         }
 
         public void Stop()
