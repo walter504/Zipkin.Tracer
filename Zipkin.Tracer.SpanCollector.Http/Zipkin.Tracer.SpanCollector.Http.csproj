@@ -53,13 +53,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Json\SerializableAnnotation.cs" />
-    <Compile Include="Json\SerializableBinaryAnnotation.cs" />
-    <Compile Include="Json\SerializableEndpoint.cs" />
-    <Compile Include="Json\SerializableSpan.cs" />
+    <Compile Include="HttpSpanCollectorConfig.cs" />
+    <Compile Include="Json\JsonAnnotation.cs" />
+    <Compile Include="Json\JsonBinaryAnnotation.cs" />
+    <Compile Include="Json\JsonEndpoint.cs" />
+    <Compile Include="Json\JsonSpan.cs" />
     <Compile Include="HttpSpanCollector.cs" />
     <Compile Include="SpanProcessor.cs" />
-    <Compile Include="SpanProcessorTaskFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

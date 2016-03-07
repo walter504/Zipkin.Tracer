@@ -4,9 +4,9 @@ using Newtonsoft.Json;
 
 namespace Zipkin.Tracer.SpanCollector.Http
 {
-    public class SerializableEndpoint
+    public class JsonEndpoint
     {
-        public SerializableEndpoint(Endpoint endpoint)
+        public JsonEndpoint(Endpoint endpoint)
         {
             serviceName = endpoint.Service_name;
             ipv4 = new IPAddress(BitConverter.GetBytes(endpoint.Ipv4)).ToString();

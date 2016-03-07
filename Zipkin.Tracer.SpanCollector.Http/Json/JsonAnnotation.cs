@@ -2,20 +2,19 @@
 
 namespace Zipkin.Tracer.SpanCollector.Http
 {
-    [JsonObject]
-    public class SerializableAnnotation
+    public class JsonAnnotation
     {
-        public SerializableAnnotation(Annotation annotation)
+        public JsonAnnotation(Annotation annotation)
         {
             timestamp = annotation.Timestamp;
             value = annotation.Value;
-            endpoint = new SerializableEndpoint(annotation.Host);
+            endpoint = new JsonEndpoint(annotation.Host);
         }
 
         public long timestamp { get; private set; }
         
         public string value { get; private set; }
         
-        public SerializableEndpoint endpoint { get; private set; }
+        public JsonEndpoint endpoint { get; private set; }
     }
 }

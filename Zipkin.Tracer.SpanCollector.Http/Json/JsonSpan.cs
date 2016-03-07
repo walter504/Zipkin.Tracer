@@ -4,9 +4,9 @@ using Newtonsoft.Json;
 namespace Zipkin.Tracer.SpanCollector.Http
 {
     [JsonObject]
-    public class SerializableSpan
+    public class JsonSpan
     {
-        public SerializableSpan(Span span)
+        public JsonSpan(Span span)
         {
             traceId = span.Trace_id.ToString("x4");
             name = span.Name;
@@ -20,8 +20,8 @@ namespace Zipkin.Tracer.SpanCollector.Http
             {
                 duration = span.Duration;
             }
-            annotations = span.Annotations == null ? null : span.Annotations.ConvertAll(t => new SerializableAnnotation(t));
-            binaryAnnotations = span.Binary_annotations == null ? null : span.Binary_annotations.ConvertAll(t => new SerializableBinaryAnnotation(t));
+            annotations = span.Annotations == null ? null : span.Annotations.ConvertAll(t => new JsonAnnotation(t));
+            binaryAnnotations = span.Binary_annotations == null ? null : span.Binary_annotations.ConvertAll(t => new JsonBinaryAnnotation(t));
         }
 
         public string traceId { get; private set; }
@@ -39,8 +39,8 @@ namespace Zipkin.Tracer.SpanCollector.Http
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public long? duration { get; set; }
 
-        public List<SerializableAnnotation> annotations { get; private set; }
+        public List<JsonAnnotation> annotations { get; private set; }
 
-        public List<SerializableBinaryAnnotation> binaryAnnotations { get; private set; }
+        public List<JsonBinaryAnnotation> binaryAnnotations { get; private set; }
     }
 }

@@ -27,9 +27,9 @@ namespace Zipkin.Tracer.AspNet.Example
 
         private void Register(ContainerBuilder builder)
         {
-            log4net.ILog logger = log4net.LogManager.GetLogger("ZipkinLogger");
+            log4net.ILog logger = log4net.LogManager.GetLogger(typeof(Global));
             builder.RegisterInstance(logger).SingleInstance();
-            var spanCollector = new HttpSpanCollector("http://192.168.1.232:9411", 1, logger);
+            var spanCollector = new HttpSpanCollector("http://192.168.1.232:9411");
             ZipkinWrapper.Builder zipkinBuilder = new ZipkinWrapper.Builder("ZipkinTracerIntegration")
                     .SpanCollector(spanCollector).TraceSampler(Sampler.Create(0.5F));
             var wrapper = zipkinBuilder.Build();
@@ -46,7 +46,6 @@ namespace Zipkin.Tracer.AspNet.Example
 
             builder.RegisterType<DefaultSpanNameProvider>().As<ISpanNameProvider>().SingleInstance();
             builder.RegisterType<ZipkinTraceModule>().As<IHttpModule>().SingleInstance();
-
         }
     }
 }

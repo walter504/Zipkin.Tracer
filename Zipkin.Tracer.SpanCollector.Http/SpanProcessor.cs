@@ -11,39 +11,41 @@ namespace Zipkin.Tracer.SpanCollector.Http
 {
     public class SpanProcessor
     {
-        //send contents of queue if it has pending items but less than max batch size after doing max number of polls
-        private const int MAX_NUMBER_OF_POLLS = 5;
+        private static ILog logger = log4net.LogManager.GetLogger(typeof(SpanProcessor));
         private const int MAX_SUBSEQUENT_EMPTY_BATCHES = 2;
-        private int connectTimeout = 30 * 1000;
-        private int readTimeout = 60 * 1000;
-        private volatile bool stop = false;
-        private int processedSpansNum = 0;
-        private int subsequentPollCount;
-        private int maxBatchSize;
-        private readonly string url;
-        private readonly ILog logger;
-        private readonly SpanProcessorTaskFactory taskFactory;
-        private readonly BlockingCollection<Span> queue;
-        //using a queue because even as we pop items to send to zipkin, another 
-        //thread can be adding spans if someone shares the span processor accross threads
-        private readonly ConcurrentQueue<SerializableSpan> serializableSpans = new ConcurrentQueue<SerializableSpan>();
 
-        public SpanProcessor(string baseUrl, BlockingCollection<Span> queue, int maxBatchSize, ILog logger)
+        private volatile bool stop = false;
+        private readonly string url;
+        private readonly BlockingCollection<Span> queue;
+        private readonly HttpSpanCollectorConfig config;
+        private readonly List<JsonSpan> JsonSpans = new List<JsonSpan>();
+        private int processedSpansNum = 0;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="baseUrl">Zipkin query service host</param>
+        /// <param name="queue">BlockingCollection that will provide spans</param>
+        /// <param name="config"></param>
+        /// <param name="logger"></param>
+        public SpanProcessor(string baseUrl, BlockingCollection<Span> queue,  HttpSpanCollectorConfig config)
         {
+            if (string.IsNullOrEmpty(baseUrl))
+            {
+                throw new ArgumentNullException("baseUrl");
+            }
             if (queue == null)
             {
                 throw new ArgumentNullException("queue");
             }
-            if (baseUrl == null)
-            {
-                throw new ArgumentNullException("baseUrl");
-            }
-
+            
             this.url = baseUrl + (baseUrl.EndsWith("/") ? "" : "/") + "api/v1/spans";
             this.queue = queue;
-            this.maxBatchSize = maxBatchSize;
-            this.logger = logger;
-            taskFactory = new SpanProcessorTaskFactory(logger);
+            this.config = config;
+        }
+        public void Stop()
+        {
+            this.stop = true;
         }
 
         public int Execute()
@@ -54,61 +56,52 @@ namespace Zipkin.Tracer.SpanCollector.Http
                 try
                 {
                     Span span;
-                    if (queue.TryTake(out span))
+                    if (queue.TryTake(out span, 5000))
                     {
-
+                        JsonSpans.Add(new JsonSpan(span));
                     }
                     else
                     {
                         subsequentEmptyBatches++;
                     }
 
-                    if (subsequentEmptyBatches >= MAX_SUBSEQUENT_EMPTY_BATCHES)
+                    if (subsequentEmptyBatches >= MAX_SUBSEQUENT_EMPTY_BATCHES && JsonSpans.Count != 0
+                        || JsonSpans.Count >= config.BatchSize 
+                        || stop && JsonSpans.Count != 0)
                     {
+                        SubmitSpans(JsonSpans);
+                        JsonSpans.Clear();
                         subsequentEmptyBatches = 0;
                     }
                 }
                 catch (Exception e)
                 {
-                    logger.Warn("Unexpected exception flushing spans", e);
+                    logger.Error("Unexpected exception flushing spans", e);
                 }
-            } while (stop);
+            } while (!stop);
             return processedSpansNum;
         }
-
-        public void Stop()
+        
+        private void SubmitSpans(List<JsonSpan> spans)
         {
-            taskFactory.StopTask();
-            LogSubmittedSpans();
-        }
-
-        public void Start()
-        {
-            taskFactory.CreateAndStart(LogSubmittedSpans);
-        }
-
-        private void LogSubmittedSpans()
-        {
-            var anyNewSpans = ProcessQueuedSpans();
-
-            if (anyNewSpans) subsequentPollCount = 0;
-            else if (serializableSpans.Count > 0) subsequentPollCount++;
-
-            if (ShouldSendQueuedSpansOverWire())
+            long start = DateTime.Now.Ticks;
+            processedSpansNum += spans.Count;
+            bool success = PostSpans(spans);
+            if (success && logger.IsInfoEnabled)
             {
-                SendSpansOverHttp();
+                logger.Info("Submitting " + spans.Count + " spans to service took " + (DateTime.Now.Ticks - start) / 10000D + "ms.");
             }
         }
 
-        private void PostSpans(string spans)
+        private bool PostSpans(List<JsonSpan> spans)
         {
-            if (spans == null) throw new ArgumentNullException("spans");
+            var json = JsonConvert.SerializeObject(spans);
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(new Uri(this.url));
-            req.Timeout = connectTimeout;
-            req.ReadWriteTimeout = readTimeout;
+            req.Timeout = config.ConnectTimeout;
+            req.ReadWriteTimeout = config.ReadWriteTimeout;
             req.Method = "POST";
             req.ContentType = "application/json";
-            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(spans);
+            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(json);
             req.ContentLength = buffer.Length;
 
             try
@@ -118,55 +111,20 @@ namespace Zipkin.Tracer.SpanCollector.Http
                     reqStream.Write(buffer, 0, buffer.Length);
                 }
                 req.GetResponse();
+                return true;
             }
-            catch (WebException ex)
+            catch (WebException e)
             {
-                LogHttpErrorMessage(ex);
-                throw ex;
+                LogHttpErrorMessage(e, spans);
             }
-        }
-
-        private bool ShouldSendQueuedSpansOverWire()
-        {
-            return serializableSpans.Any() &&
-                   (serializableSpans.Count() >= maxBatchSize
-                   || taskFactory.IsTaskCancelled()
-                   || subsequentPollCount > MAX_NUMBER_OF_POLLS);
-        }
-
-        private bool ProcessQueuedSpans()
-        {
-            Span span;
-            var anyNewSpansQueued = false;
-            while (queue.TryTake(out span))
+            catch (Exception e)
             {
-                serializableSpans.Enqueue(new SerializableSpan(span));
-                anyNewSpansQueued = true;
+                logger.Error("Send spans failed. " + spans.Count + " spans are lost!", e);
             }
-            return anyNewSpansQueued;
+            return false;
         }
 
-        private void SendSpansOverHttp()
-        {
-            var spansJsonRepresentation = GetSpansJSONRepresentation();
-            PostSpans(spansJsonRepresentation);
-            subsequentPollCount = 0;
-        }
-
-        private string GetSpansJSONRepresentation()
-        {
-            SerializableSpan span;
-            var spanList = new List<SerializableSpan>();
-            //using Dequeue into a list so that the span is removed from the queue as we add it to list
-            while (serializableSpans.TryDequeue(out span))
-            {
-                spanList.Add(span);
-            }
-            var spansJsonRepresentation = JsonConvert.SerializeObject(spanList);
-            return spansJsonRepresentation;
-        }
-
-        private void LogHttpErrorMessage(WebException ex)
+        private void LogHttpErrorMessage(WebException ex, List<JsonSpan> spans)
         {
             var response = ex.Response as HttpWebResponse;
             if (response == null) return;
@@ -180,8 +138,8 @@ namespace Zipkin.Tracer.SpanCollector.Http
                 }
             }
             response.Close();
-            logger.ErrorFormat("Failed to send spans to Zipkin server (HTTP status code returned: {0}). Exception message: {1}, response from server: {2}",
-                response.StatusCode, ex.Message, content);
+            logger.ErrorFormat("Failed to send spans to Zipkin server (HTTP status code returned: {0}). {1} spans are lost! Exception message: {2}, response from server: {3}",
+                response.StatusCode, spans.Count, ex.Message, content);
         }
     }
 }
