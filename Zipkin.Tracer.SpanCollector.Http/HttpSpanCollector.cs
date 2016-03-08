@@ -39,14 +39,14 @@ namespace Zipkin.Tracer.SpanCollector.Http
             if (queue.TryAdd(span))
             {
                 long end = DateTime.Now.Ticks;
-                if (logger.IsInfoEnabled)
+                if (logger.IsDebugEnabled)
                 {
-                    logger.Info("Adding span to queue took " + (end - start) / 10000D + "ms.");
+                    logger.Debug("Adding span to queue took " + (end - start) / 10000D + "ms.");
                 }
             }
             else
             {
-                logger.Error("Queue rejected Span, span not submitted: " + span);
+                logger.Warn("Queue rejected Span, span not submitted: " + span);
             }
         }
 

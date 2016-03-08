@@ -10,10 +10,10 @@ namespace Zipkin.Tracer.SpanCollector.Http
 {
     public class HttpSpanCollectorConfig
     {
-        public const int DEFAULT_QUEUE_SIZE = 100;
-        public const int DEFAULT_BATCH_SIZE = 10;
+        public const int DEFAULT_QUEUE_SIZE = 1000;
+        public const int DEFAULT_BATCH_SIZE = 50;
         public const int DEFAULT_NR_OF_THREADS = 1;
-        public const int DEFAULT_CONNECT_TIMEOUT = 15 * 1000;
+        public const int DEFAULT_CONNECT_TIMEOUT = 10 * 1000;
         public const int DEFAULT_READ_WRITE_TIMEOUT = 60 * 1000;
 
         private int queueSize;
