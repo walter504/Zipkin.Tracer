@@ -10,12 +10,11 @@ namespace Zipkin.Tracer.Core
 {
     public class Util
     {
-        private static Random rnd = new Random(DateTime.Now.Millisecond);
         private static DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         
         public static long NextLong()
         {
-            return (long)(rnd.NextDouble() * long.MaxValue);
+            return BitConverter.ToInt64(Guid.NewGuid().ToByteArray(), 8);
         }
 
         public static long HexToLong(string hex)
