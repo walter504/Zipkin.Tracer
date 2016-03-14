@@ -89,14 +89,14 @@ namespace Zipkin.Tracer.SpanCollector.Http
             bool success = PostSpans(spans);
             if (success && logger.IsInfoEnabled)
             {
-                logger.Info("Submitting " + spans.Count + " spans to service took " + (DateTime.Now.Ticks - start) / 10000D + "ms.");
+                logger.InfoFormat("Submitting {0} spans to service took {1}ms.", spans.Count, (DateTime.Now.Ticks - start) / 10000D);
             }
         }
 
         private bool PostSpans(List<JsonSpan> spans)
         {
             var json = JsonConvert.SerializeObject(spans);
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(new Uri(this.url));
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(this.url);
             req.Timeout = config.ConnectTimeout;
             req.ReadWriteTimeout = config.ReadWriteTimeout;
             req.Method = "POST";
@@ -110,8 +110,10 @@ namespace Zipkin.Tracer.SpanCollector.Http
                 {
                     reqStream.Write(buffer, 0, buffer.Length);
                 }
-                req.GetResponse();
-                return true;
+                using (req.GetResponse())
+                {
+                    return true;
+                }
             }
             catch (WebException e)
             {
@@ -119,27 +121,35 @@ namespace Zipkin.Tracer.SpanCollector.Http
             }
             catch (Exception e)
             {
-                logger.Error("Send spans failed. " + spans.Count + " spans are lost!", e);
+                logger.ErrorFormat("Send spans failed. {0} spans are lost! Exception message: {1}.", spans.Count, e.Message);
+            }
+            finally
+            {
+                if (req != null)
+                {
+                    req.Abort();
+                }
             }
             return false;
         }
 
-        private void LogHttpErrorMessage(WebException ex, List<JsonSpan> spans)
+        private void LogHttpErrorMessage(WebException e, List<JsonSpan> spans)
         {
-            var response = ex.Response as HttpWebResponse;
-            if (response == null) return;
-            string content = string.Empty;
-            var receiveStream = response.GetResponseStream();
-            if (receiveStream != null)
+            var response = e.Response as HttpWebResponse;
+            if (response == null)
             {
-                using(StreamReader readStream = new StreamReader(receiveStream, System.Text.Encoding.UTF8))
-                {
-                    content = readStream.ReadToEnd();
-                }
+                logger.Error("Send spans failed. " + spans.Count + " spans are lost!", e);
             }
-            response.Close();
-            logger.ErrorFormat("Failed to send spans to Zipkin server (HTTP status code returned: {0}). {1} spans are lost! Exception message: {2}, response from server: {3}",
-                response.StatusCode, spans.Count, ex.Message, content);
+            else
+            {
+                using (Stream receiveStream = response.GetResponseStream())
+                using (StreamReader readStream = new StreamReader(receiveStream, System.Text.Encoding.UTF8))
+                {
+                    logger.ErrorFormat("Failed to send spans to zipkin server (HTTP status code returned: {0}). {1} spans are lost! Exception message: {2}, response from server: {3}",
+                    response.StatusCode, spans.Count, e.Message, readStream.ReadToEnd());
+                }
+                response.Close();
+            }
         }
     }
 }
