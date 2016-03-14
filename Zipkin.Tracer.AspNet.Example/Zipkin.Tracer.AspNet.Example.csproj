@@ -119,9 +119,9 @@
       <Project>{4daba6e3-68fa-49e1-bfdb-90203c787e4a}</Project>
       <Name>Zipkin.Tracer.Http</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Zipkin.Tracer.SpanCollector\Zipkin.Tracer.SpanCollector.csproj">
+    <ProjectReference Include="..\Zipkin.Tracer.SpanCollector.Http\Zipkin.Tracer.SpanCollector.Http.csproj">
       <Project>{897e08e7-d8db-4c94-9f52-af4b9e038967}</Project>
-      <Name>Zipkin.Tracer.SpanCollector</Name>
+      <Name>Zipkin.Tracer.SpanCollector.Http</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

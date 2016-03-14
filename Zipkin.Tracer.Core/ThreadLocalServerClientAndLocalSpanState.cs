@@ -72,7 +72,7 @@ namespace Zipkin.Tracer.Core
         {
             get
             {
-                return currentServerSpan.Value.Sample;
+                return currentServerSpan.Value == null ? null : currentServerSpan.Value.Sample;
             }
         }
 

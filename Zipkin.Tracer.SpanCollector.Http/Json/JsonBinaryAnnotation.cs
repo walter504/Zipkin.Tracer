@@ -2,16 +2,16 @@
 using System;
 using System.Text;
 
-namespace Zipkin.Tracer.SpanCollector
+namespace Zipkin.Tracer.SpanCollector.Http
 {
-    public class SerializableBinaryAnnotation
+    public class JsonBinaryAnnotation
     {
-        public SerializableBinaryAnnotation(BinaryAnnotation ba)
+        public JsonBinaryAnnotation(BinaryAnnotation ba)
         {
             key = ba.Key;
             value = ba.Value;
             annotationType = ba.Annotation_type.ToString();
-            endpoint = new SerializableEndpoint(ba.Host);
+            endpoint = new JsonEndpoint(ba.Host);
             switch (ba.Annotation_type)
             {
                 case AnnotationType.BOOL: value = BitConverter.ToBoolean(ba.Value, 0); break;
@@ -31,6 +31,6 @@ namespace Zipkin.Tracer.SpanCollector
 
         public string annotationType { get; private set; }
 
-        public SerializableEndpoint endpoint { get; private set; }
+        public JsonEndpoint endpoint { get; private set; }
     }
 }
