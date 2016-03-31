@@ -22,6 +22,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Example", "Example", "{44D8
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zipkin.Tracer.AspNet.Example", "Zipkin.Tracer.AspNet.Example\Zipkin.Tracer.AspNet.Example.csproj", "{2785ACAB-C07A-4206-8736-12B34E3B6B65}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zipkin.Tracer.AspNet", "Zipkin.Tracer.AspNet\Zipkin.Tracer.AspNet.csproj", "{0D7BA640-ADE0-4CA2-BA65-43AF70065379}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{2785ACAB-C07A-4206-8736-12B34E3B6B65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2785ACAB-C07A-4206-8736-12B34E3B6B65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2785ACAB-C07A-4206-8736-12B34E3B6B65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D7BA640-ADE0-4CA2-BA65-43AF70065379}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D7BA640-ADE0-4CA2-BA65-43AF70065379}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D7BA640-ADE0-4CA2-BA65-43AF70065379}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D7BA640-ADE0-4CA2-BA65-43AF70065379}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
