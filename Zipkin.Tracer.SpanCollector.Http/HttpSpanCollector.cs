@@ -1,4 +1,4 @@
-﻿using log4net;
+﻿using Common.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ namespace Zipkin.Tracer.SpanCollector.Http
 {
     public class HttpSpanCollector : ISpanCollector, IDisposable
     {
-        private static ILog logger = log4net.LogManager.GetLogger(typeof(HttpSpanCollector));
+        private static ILog logger = LogManager.GetLogger(typeof(HttpSpanCollector));
 
         private readonly BlockingCollection<Span> queue;
         private readonly List<SpanProcessor> processors = new List<SpanProcessor>();

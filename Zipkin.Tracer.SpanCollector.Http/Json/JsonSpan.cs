@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace Zipkin.Tracer.SpanCollector.Http
 {
-    [JsonObject]
     public class JsonSpan
     {
         public JsonSpan(Span span)
@@ -30,13 +28,10 @@ namespace Zipkin.Tracer.SpanCollector.Http
 
         public string id { get; private set; }
 
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string parentId { get; private set; }
 
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public long? timestamp { get; set; }
 
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public long? duration { get; set; }
 
         public List<JsonAnnotation> annotations { get; private set; }

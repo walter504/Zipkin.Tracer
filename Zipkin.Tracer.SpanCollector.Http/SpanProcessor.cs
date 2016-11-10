@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using log4net;
-using Newtonsoft.Json;
+using Common.Logging;
 
 namespace Zipkin.Tracer.SpanCollector.Http
 {
     public class SpanProcessor
     {
-        private static ILog logger = log4net.LogManager.GetLogger(typeof(SpanProcessor));
+        private static ILog logger = LogManager.GetLogger(typeof(SpanProcessor));
         private const int MAX_SUBSEQUENT_EMPTY_BATCHES = 2;
 
         private volatile bool stop = false;
@@ -95,7 +94,7 @@ namespace Zipkin.Tracer.SpanCollector.Http
 
         private bool PostSpans(List<JsonSpan> spans)
         {
-            var json = JsonConvert.SerializeObject(spans);
+            var json = Jil.JSON.SerializeDynamic(spans);
             HttpWebRequest req = (HttpWebRequest)WebRequest.Create(this.url);
             req.Timeout = config.ConnectTimeout;
             req.ReadWriteTimeout = config.ReadWriteTimeout;

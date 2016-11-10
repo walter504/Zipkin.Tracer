@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Text;
 
 namespace Zipkin.Tracer.SpanCollector.Http
